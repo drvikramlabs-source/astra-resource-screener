@@ -6,30 +6,28 @@ st.set_page_config(page_title="ASTRA Resource Screener", layout="wide", page_ico
 st.title("📊 ASTRA - Demand vs Supply Matching Engine")
 st.markdown("**NSE-style Resource Utilization Screener** for Workforce Planning & Resource Allocation")
 
-# ====================== DATA (Exact from your Excel) ======================
+# ====================== DATA (Clean version - fixed for Streamlit Cloud) ======================
 @st.cache_data
 def load_data():
     projects_data = {
-        'Project ID': [1,2,3,4,5,6,7,8],
-        'Project Name': ['Astrazeneca','Stryker','Prudential Insurance','Walmartlabs','Newell Brands','Humana Insurance','Pfizer','Google'],
-        'Start Date': pd.to_datetime([45739,45802,45786,45808,45746,45788,45745,45803], unit='D', origin='1899-12-30'),
-        'End Date': pd.to_datetime([45911,45908,45861,45923,45907,45857,45871,45872], unit='D', origin='1899-12-30'),
-        'Required Skill 1': ['Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci'],
-        'Required Skill 2': ['6 Sigma','PgMP','SAFe','PMP','SAFe','Canva','SAFe','PMP'],
-        'Required Skill 3': ['PMP','Canva','6 Sigma','SAFe','Articulate','EnableNow','Articulate','6 Sigma'],
-        'Geography': ['Noida','Noida','Pune','Bengaluru','Noida','Bengaluru','Pune','Pune']
+        'Project ID': [1, 2, 3, 4, 5, 6, 7, 8],
+        'Project Name': ['Astrazeneca', 'Stryker', 'Prudential Insurance', 'Walmartlabs', 'Newell Brands', 'Humana Insurance', 'Pfizer', 'Google'],
+        'Required Skill 1': ['Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci'],
+        'Required Skill 2': ['6 Sigma', 'PgMP', 'SAFe', 'PMP', 'SAFe', 'Canva', 'SAFe', 'PMP'],
+        'Required Skill 3': ['PMP', 'Canva', '6 Sigma', 'SAFe', 'Articulate', 'EnableNow', 'Articulate', '6 Sigma'],
+        'Geography': ['Noida', 'Noida', 'Pune', 'Bengaluru', 'Noida', 'Bengaluru', 'Pune', 'Pune']
     }
     projects_df = pd.DataFrame(projects_data)
 
     resources_data = {
-        'Employee Name': ['Jaya','Shoumo','Shreyansh','Animesh','Amit','Shaveta','Varnika','Vandita','TK','Sonia','Shivansh','Divya','Rekha','Ranjeet','Tony Stark','Bruce Banner','Steven Strange','Natasha','Nick Fury'],
-        'Current Status': ['Billable','Billable','Billable','On Bench','On Bench','On Bench','Billable','Billable','Billable','On Bench','Billable','On Bench','On Bench','Billable','On Bench','On Bench','Billable','Billable','Billable'],
-        'Skill 1': ['Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','EnableNow','Prosci','Prosci','Prosci','Prosci','Prosci','Prosci','Articulate','Prosci','Prosci'],
-        'Skill 2': ['6 Sigma','PgMP','','PMP','','SAFe','SAFe','PMP','PMP','PMP','PMP','PMP','PMP','EnableNow','PMP','EnableNow','PMP','PMP','PMP'],
-        'Skill 3': ['PgMP','','6 Sigma','SAFe','','','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma','6 Sigma'],
-        'Geography': ['Noida','Noida','Pune','Bengaluru','Noida','Bengaluru','Pune','Pune','Noida','Bengaluru','Bengaluru','Bengaluru','Pune','Noida','Hyderabad','Bengaluru','Bengaluru','Noida','Chennai'],
-        'Available in (Days)': ['65','10','74','Immediate','Immediate','Immediate','70','20','34','Immediate','7','Immediate','Immediate','34','Immediate','Immediate','Immediate','69','25'],
-        'Next Available Date': [45903,45848,45912,45837,45837,45837,45908,45858,45872,45837,45845,45837,45837,45872,45837,45837,45838,45907,45863]
+        'Employee Name': ['Jaya', 'Shoumo', 'Shreyansh', 'Animesh', 'Amit', 'Shaveta', 'Varnika', 'Vandita', 'TK', 'Sonia', 'Shivansh', 'Divya', 'Rekha', 'Ranjeet', 'Tony Stark', 'Bruce Banner', 'Steven Strange', 'Natasha', 'Nick Fury'],
+        'Current Status': ['Billable', 'Billable', 'Billable', 'On Bench', 'On Bench', 'On Bench', 'Billable', 'Billable', 'Billable', 'On Bench', 'Billable', 'On Bench', 'On Bench', 'Billable', 'On Bench', 'On Bench', 'Billable', 'Billable', 'Billable'],
+        'Skill 1': ['Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'EnableNow', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Prosci', 'Articulate', 'Prosci', 'Prosci'],
+        'Skill 2': ['6 Sigma', 'PgMP', '', 'PMP', '', 'SAFe', 'SAFe', 'PMP', 'PMP', 'PMP', 'PMP', 'PMP', 'PMP', 'EnableNow', 'PMP', 'EnableNow', 'PMP', 'PMP', 'PMP'],
+        'Skill 3': ['PgMP', '', '6 Sigma', 'SAFe', '', '', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma', '6 Sigma'],
+        'Geography': ['Noida', 'Noida', 'Pune', 'Bengaluru', 'Noida', 'Bengaluru', 'Pune', 'Pune', 'Noida', 'Bengaluru', 'Bengaluru', 'Bengaluru', 'Pune', 'Noida', 'Hyderabad', 'Bengaluru', 'Bengaluru', 'Noida', 'Chennai'],
+        'Available in (Days)': ['65', '10', '74', 'Immediate', 'Immediate', 'Immediate', '70', '20', '34', 'Immediate', '7', 'Immediate', 'Immediate', '34', 'Immediate', 'Immediate', 'Immediate', '69', '25'],
+        'Next Available Date': [45903, 45848, 45912, 45837, 45837, 45837, 45908, 45858, 45872, 45837, 45845, 45837, 45837, 45872, 45837, 45837, 45838, 45907, 45863]
     }
     resources_df = pd.DataFrame(resources_data)
     return projects_df, resources_df
@@ -38,12 +36,14 @@ projects_df, resources_df = load_data()
 
 # ====================== SCORING LOGIC (Exact replica of your Excel Dashboard) ======================
 def calculate_suitability(project_row, resources_df):
-    req_skills = [project_row['Required Skill 1'], project_row['Required Skill 2'], project_row['Required Skill 3']]
+    req_skills = [project_row['Required Skill 1'], 
+                  project_row.get('Required Skill 2', ''), 
+                  project_row.get('Required Skill 3', '')]
     req_skills = [s for s in req_skills if pd.notna(s) and str(s).strip() != '']
     proj_geo = project_row['Geography']
     
     def score_row(row):
-        res_skills = [row['Skill 1'], row.get('Skill 2',''), row.get('Skill 3','')]
+        res_skills = [row['Skill 1'], row.get('Skill 2', ''), row.get('Skill 3', '')]
         res_skills = [s for s in res_skills if pd.notna(s) and str(s).strip() != '']
         skill_match = len(set(req_skills) & set(res_skills))
         
@@ -55,10 +55,14 @@ def calculate_suitability(project_row, resources_df):
             avail_score = 1
         else:
             avail_days = int(avail)
-            if avail_days <= 14: avail_score = 4
-            elif avail_days <= 30: avail_score = 3
-            elif avail_days <= 60: avail_score = 2
-            else: avail_score = 1
+            if avail_days <= 14:
+                avail_score = 4
+            elif avail_days <= 30:
+                avail_score = 3
+            elif avail_days <= 60:
+                avail_score = 2
+            else:
+                avail_score = 1
         
         suitability = avail_score + skill_match + geo_match
         return pd.Series({
@@ -87,7 +91,7 @@ if option == "Existing Project":
 else:
     st.sidebar.subheader("Custom Scenario")
     project_name = st.sidebar.text_input("Project Name", "Custom Project")
-    geo = st.sidebar.selectbox("Geography", ['Bengaluru','Noida','Pune','Hyderabad','Chennai'])
+    geo = st.sidebar.selectbox("Geography", ['Bengaluru', 'Noida', 'Pune', 'Hyderabad', 'Chennai'])
     skill1 = st.sidebar.text_input("Required Skill 1", "Prosci")
     skill2 = st.sidebar.text_input("Required Skill 2", "Canva")
     skill3 = st.sidebar.text_input("Required Skill 3", "EnableNow")
@@ -101,7 +105,7 @@ else:
 
 # ====================== MAIN DASHBOARD ======================
 st.subheader(f"📌 Project: {project_row['Project Name']} | Location: {project_row['Geography']}")
-st.caption(f"**Required Skills:** {project_row['Required Skill 1']}, {project_row.get('Required Skill 2','')}, {project_row.get('Required Skill 3','')}")
+st.caption(f"**Required Skills:** {project_row['Required Skill 1']}, {project_row.get('Required Skill 2', '')}, {project_row.get('Required Skill 3', '')}")
 
 result_df = calculate_suitability(project_row, resources_df)
 
@@ -110,7 +114,7 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("Demand", "1 Resource")
 high_fit = len(result_df[result_df['Suitability Score'] >= 4])
 col2.metric("High-Fit Resources (≥4)", high_fit)
-col3.metric("Immediate / Near-term", len(result_df[result_df['Available in (Days)'].isin(['Immediate', '7', '10', '20'])]))
+col3.metric("Immediate / Near-term", len(result_df[result_df['Available in (Days)'].apply(lambda x: str(x).strip().lower() in ['immediate', '7', '10', '20'])]))
 col4.metric("Capacity Gap", "0 - Well Covered" if high_fit >= 1 else "Shortage")
 
 # Filters
@@ -122,9 +126,14 @@ with st.expander("🔧 Filters"):
     filtered = result_df[result_df['Suitability Score'] >= min_score]
     if geo_only:
         filtered = filtered[filtered['Geo Matched'] == 'Yes']
-    # Handle 'Immediate' for filtering
+    
     def get_days(x):
-        return 0 if str(x).strip().lower() == 'immediate' else int(x)
+        if str(x).strip().lower() == 'immediate':
+            return 0
+        try:
+            return int(x)
+        except:
+            return 999
     filtered = filtered[filtered['Available in (Days)'].apply(get_days) <= max_days]
 
 # Results Table
@@ -135,7 +144,7 @@ st.dataframe(
     hide_index=True
 )
 
-# Export
+# Export Button
 csv = filtered.to_csv(index=False).encode('utf-8')
 st.download_button(
     label="📥 Download Results as CSV",
@@ -144,4 +153,4 @@ st.download_button(
     mime="text/csv"
 )
 
-st.success("✅ Engine is live! Test with Humana Insurance or create custom scenarios.")
+st.success("✅ Matching Engine is live! Test with 'Humana Insurance' or create custom scenarios.")
